@@ -1,0 +1,15 @@
+{
+  "name": "user/public",
+  "autoload": {
+    "psr-4": {
+      "app\\": "./"
+    }
+  },
+  "authors": [
+    {
+      "name": "BatyrDaurov",
+      "email": "batyr.daurov@mail.ru"
+    }
+  ],
+  "require": {}
+}
