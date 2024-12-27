@@ -4,7 +4,9 @@
         <div class="col">
             <div class="form-group">
                 <label>Firstname</label>
-                <input name="firstname" type="text" class="form-control">
+                <input name="firstname" type="text" value=""
+                    class="form-control <?= $model->hasError('firstname') ? 'is-invalid' : '' ?>">
+                <div class="invalid-feedback"><?= $model->getFirstError('firstname'); ?></div>
             </div>
         </div>
         <div class="col">
@@ -24,7 +26,7 @@
     </div>
     <div class="form-group">
         <label for="exampleInputEmail1">Confirm Password</label>
-        <input name="passwordconfirm" type="password" class="form-control">
+        <input name="passwordConfirm" type="password" class="form-control">
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
