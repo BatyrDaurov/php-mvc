@@ -4,20 +4,20 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\Request;
-use app\models\RegisterModel;
+use app\models\User;
+use app\core\Application;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $registerModel = new RegisterModel();
+        $registerModel = new User();
 
         if ($request->isPost()) {
             $registerModel->loadData($request->getBody());
-            if ($registerModel->validate() && $registerModel->register()) {
+            if ($registerModel->validate() && $registerModel->save()) {
                 return 'Success';
             }
-            var_dump($registerModel->errors);
 
             return $this->render('login', [
                 'model' => $registerModel
@@ -30,22 +30,22 @@ class AuthController extends Controller
     }
     public function register(Request $request)
     {
-        $registerModel = new RegisterModel();
+        $user = new User();
 
         if ($request->isPost()) {
-            $registerModel->loadData($request->getBody());
-            if ($registerModel->validate() && $registerModel->register()) {
-                return 'Success';
+            $user->loadData($request->getBody());
+            if ($user->validate() && $user->save()) {
+                Application::$app->session->setFlash('success', 'Вы зарегистрировались!');
+                Application::$app->response->redirect('/');
             }
-            var_dump($registerModel->errors);
 
             return $this->render('register', [
-                'model' => $registerModel
+                'model' => $user
             ]);
         }
 
         return $this->render('register', [
-            'model' => $registerModel
+            'model' => $user
         ]);
     }
 }

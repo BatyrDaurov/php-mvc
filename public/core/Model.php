@@ -9,6 +9,7 @@ abstract class Model
     public const RULE_MIN = 'min';
     public const RULE_MAX = 'max';
     public const RULE_MATCH = 'match';
+    public const RULE_UNIQUE = 'unique';
     abstract public function rules(): array;
 
     public array $errors = [];
@@ -45,7 +46,21 @@ abstract class Model
                     $this->addError($attribute, self::RULE_MAX, $rule);
                 }
                 if (($ruleName === self::RULE_MATCH) && $value !== $this->{$rule['match']}) {
+                    $rule['match'] = $this->getLabel($rule['match']);
                     $this->addError($attribute, self::RULE_MATCH, $rule);
+                }
+                if (($ruleName === self::RULE_UNIQUE)) {
+                    $className = $rule['class'];
+                    $uniqueAttr = $rule['attribute'] ?? $attribute;
+                    $tableName = $className::tableName();
+
+                    $statement = Application::$app->db->prepare("SELECT * FROM $tableName WHERE $uniqueAttr = :$uniqueAttr");
+                    $statement->bindValue(":email", $value);
+                    $statement->execute();
+                    $record = $statement->fetchObject();
+                    if ($record) {
+                        $this->addError($attribute, self::RULE_UNIQUE, ['field' => $this->getLabel($attribute)]);
+                    }
                 }
             }
         }
@@ -70,6 +85,7 @@ abstract class Model
             self::RULE_MATCH => 'Пароли не совпадают.',
             self::RULE_MIN => 'Минимальное кол-во символов - {min}.',
             self::RULE_MAX => 'Максимальное кол-во символов - {max}.',
+            self::RULE_UNIQUE => 'Поле с значением {field} уже существует.',
         ];
     }
 
@@ -87,4 +103,14 @@ abstract class Model
         return $this->errors[$attribute][0] ?? '';
 
     }
+    public function labels(): array
+    {
+        return [];
+    }
+
+    public function getLabel($attribute)
+    {
+        return $this->labels()[$attribute] ?? $attribute;
+    }
+
 }
