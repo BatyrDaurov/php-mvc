@@ -10,6 +10,7 @@
 </head>
 
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">PHP-MVC</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -24,13 +25,26 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/contact">Contact</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
-                </li>
             </ul>
+            <? if (\app\core\Application::isGuest()): ?>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Register</a>
+                    </li>
+                </ul>
+            <? else: ?>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Добро пожаловать
+                            <?= \app\core\Application::$app->user->getDisplayName(); ?>
+                            (Выйти)
+                        </a>
+                    </li>
+                </ul>
+            <? endif; ?>
         </div>
     </nav>
     <div class="container">

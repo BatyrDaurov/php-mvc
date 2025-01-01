@@ -1,21 +1,26 @@
 <?php
 namespace app\core;
 
+use stdClass;
+
 /*
  * Class Application
  */
 class Application
 {
+    public static Application $app;
     public static string $ROOT_DIR;
+    public string $userClass;
     public Router $router;
     public Request $request;
     public Response $response;
     public Session $session;
+    public ?DbModel $user;
     public Controller $controller;
     public Database $db;
-    public static Application $app;
     public function __construct($rootPath, array $config)
     {
+        $this->userClass = $config['userClass'];
         self::$ROOT_DIR = $rootPath;
         self::$app = $this;
         $this->request = new Request();
@@ -24,6 +29,14 @@ class Application
         $this->router = new Router($this->request, $this->response);
 
         $this->db = new Database($config['db']);
+        $pv = $this->session->get('user');
+        if ($pv) {
+            $tempUser = new $this->userClass();
+            $pk = $tempUser->primaryKey();
+            $this->user = $tempUser->findOne([$pk => $pv]);
+        } else {
+            $this->user = null;
+        }
     }
     public function run()
     {
@@ -42,4 +55,22 @@ class Application
     {
         $this->controller = $controller;
     }
+    public function login(DbModel $user)
+    {
+        $this->user = $user;
+        $primaryKey = $user->primaryKey();
+        $primaryValue = $user->{$primaryKey};
+        $this->session->set('user', $primaryValue);
+        return true;
+    }
+    public function logout()
+    {
+        $this->user = null;
+        $this->session->remove('user');
+    }
+    public static function isGuest()
+    {
+        return !self::$app->user;
+    }
+
 }
