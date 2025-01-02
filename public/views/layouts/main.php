@@ -20,23 +20,26 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contact</a>
+                    <a class="nav-link" href="/contact">Контакты</a>
                 </li>
             </ul>
             <? if (\app\core\Application::isGuest()): ?>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
+                        <a class="nav-link" href="/login">Войти</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/register">Register</a>
+                        <a class="nav-link" href="/register">Зарегистрироваться</a>
                     </li>
                 </ul>
             <? else: ?>
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Профиль</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Добро пожаловать
                             <?= \app\core\Application::$app->user->getDisplayName(); ?>
